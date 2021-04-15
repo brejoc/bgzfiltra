@@ -1,0 +1,36 @@
+version: "3"
+
+services:
+  bgz_filtra:
+    image: registry.opensuse.org/opensuse/tumbleweed:latest
+    container_name: bgzfiltra_bgzfiltra
+    restart: always
+    networks:
+      - "questdb"
+
+  questdb:
+    image: questdb/questdb
+    container_name: bgzfiltra_questdb
+    restart: always
+    ports:
+      - "8812:8812"
+      - "9000:9000"
+    networks:
+      - "questdb"
+    volumes:
+      - ./data/db:/root/.questdb/db
+  
+  grafana:
+    image: grafana/grafana
+    container_name: bgzfiltra_grafana
+    restart: always
+    ports:
+      - 3000:3000
+    networks:
+      - "questdb"
+    volumes:
+      - ./data/grafana:/var/lib/grafana/
+      - ./grafana/provisioning/:/etc/grafana/provisioning/
+
+networks:
+  questdb:

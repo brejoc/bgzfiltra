@@ -1,0 +1,27 @@
+#!/usr/bin/env python3
+
+__author__ = "Jochen Breuer"
+__email__ = "jbreuer@suse.de"
+__license__ = "MIT"
+__docopt__ = """bgzfiltra
+
+Usage:
+  main.py
+  main.py (-h | --help)
+  main.py --use-cache
+  main.py --version
+
+Options:
+  -h --help     Show this screen.
+  --version     Show version number.
+  --use-cache   Use cache from last run (for testing).
+"""
+
+from docopt import docopt
+from bgzfiltra import main
+
+
+
+if __name__ == "__main__":
+    options = docopt(__docopt__, version="0.1.0")
+    main(options)

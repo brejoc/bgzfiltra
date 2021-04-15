@@ -1,0 +1,24 @@
+[tool.poetry]
+name = "bgzcomp"
+version = "0.1.0"
+description = ""
+authors = ["Jochen Breuer <jbreuer@suse.de>"]
+license = "MIT"
+
+[tool.poetry.dependencies]
+python = "^3.8"
+python-bugzilla = "^3.0.2"
+docopt = "^0.6.2"
+psycopg2-binary = "^2.8.6"
+toml = "^0.10.2"
+
+[tool.poetry.dev-dependencies]
+black = "^20.8b1"
+rope = "^0.18.0"
+mypy = "^0.812"
+mock = "^4.0.3"
+pytest = "^6.2.2"
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"

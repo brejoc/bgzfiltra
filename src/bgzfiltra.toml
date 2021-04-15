@@ -1,0 +1,12 @@
+[bugzilla]
+products = ["SUSE Manager 4.0", "SUSE Manager 4.1"]
+url = "bugzilla.suse.com"
+username = "<user>"
+password = "<password>"
+
+[questdb]
+user = "admin"
+password = "quest"
+host = "127.0.0.1"
+port = "8812"
+database = "qdb"

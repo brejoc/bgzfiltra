@@ -18,8 +18,6 @@ from persistence import QuestDB
 from toml_config import get_settings
 
 
-
-
 def group_bugs_by_assignee(
     bugs: typing.List[Bug],
 ) -> typing.Dict[str, typing.List[Bug]]:

@@ -1,4 +1,3 @@
-
 __author__ = "Jochen Breuer"
 __email__ = "jbreuer@suse.de"
 __license__ = "MIT"

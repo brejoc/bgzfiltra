@@ -10,16 +10,19 @@ Usage:
   main.py (-h | --help)
   main.py --use-cache
   main.py --version
+  main.py --interval <minutes>
+  main.py --interval <minutes> --use-cache
 
 Options:
   -h --help     Show this screen.
   --version     Show version number.
   --use-cache   Use cache from last run (for testing).
+  --interval    Interval in minutes. Every x minutes data will be fetched from
+                bugzilla.
 """
 
 from docopt import docopt
 from bgzfiltra import main
-
 
 
 if __name__ == "__main__":

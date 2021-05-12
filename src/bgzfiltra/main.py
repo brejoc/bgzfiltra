@@ -7,6 +7,7 @@ __license__ = "MIT"
 import os
 import sys
 import time
+import signal
 import pickle
 import typing
 import bugzilla
@@ -78,54 +79,67 @@ def main(options):
     settings = get_settings()
     db_settings = settings["questdb"]
     products = settings["bugzilla"]["products"]
-    time: datetime = datetime.now()
+    timestamp: datetime = datetime.now()
 
     db = QuestDB()
     db.connect(db_settings)
     db.setup_tables()
 
-    for product in products:
-        print("Product: {}".format(product))
-        bugzilla_bugs = get_bugs_for_product(
-            product, settings["bugzilla"], use_cache=options.get("--use-cache", False)
-        )
-        print("Found %d bugs with our query" % len(bugzilla_bugs))
-        bugzilla_l3s = [bug for bug in bugzilla_bugs if is_l3(bug)]
+    while True:
+        for product in products:
+            print("Product: {}".format(product))
+            bugzilla_bugs = get_bugs_for_product(
+                product, settings["bugzilla"], use_cache=options.get("--use-cache", False)
+            )
+            print("Found %d bugs with our query" % len(bugzilla_bugs))
+            bugzilla_l3s = [bug for bug in bugzilla_bugs if is_l3(bug)]
 
-        # Bugs by status
-        grouped_bugs = group_bugs_by_status(bugzilla_bugs)
-        for status, bugs in grouped_bugs.items():
-            db.insert_status(product, status, len(bugs), time)
+            # Bugs by status
+            grouped_bugs = group_bugs_by_status(bugzilla_bugs)
+            for status, bugs in grouped_bugs.items():
+                db.insert_status(product, status, len(bugs), timestamp)
 
-        # Bugs by component
-        grouped_bugs = group_bugs_by_component(bugzilla_bugs)
-        for component, bugs in grouped_bugs.items():
-            db.insert_component(product, component, len(bugs), time)
+            # Bugs by component
+            grouped_bugs = group_bugs_by_component(bugzilla_bugs)
+            for component, bugs in grouped_bugs.items():
+                db.insert_component(product, component, len(bugs), timestamp)
 
-        # L3 bugs
-        l3s = group_bugs_by_status(bugzilla_l3s)
-        for status, bugs in l3s.items():
-            db.insert_l3(product, status, len(bugs), time)
+            # L3 bugs
+            l3s = group_bugs_by_status(bugzilla_l3s)
+            for status, bugs in l3s.items():
+                db.insert_l3(product, status, len(bugs), timestamp)
 
-        # L3 cases
-        results = {"open": 0, "closed": 0}
-        for l3 in bugzilla_l3s:
-            results["open"] += l3.whiteboard.count("openL3:")
-            results["closed"] += l3.whiteboard.count("wasL3:")
-        db.insert_l3_cases(product, "open", results["open"], time)
-        db.insert_l3_cases(product, "closed", results["closed"], time)
+            # L3 cases
+            results = {"open": 0, "closed": 0}
+            for l3 in bugzilla_l3s:
+                results["open"] += l3.whiteboard.count("openL3:")
+                results["closed"] += l3.whiteboard.count("wasL3:")
+            db.insert_l3_cases(product, "open", results["open"], timestamp)
+            db.insert_l3_cases(product, "closed", results["closed"], timestamp)
 
-        # Bugs per priority
-        results = {"p1": 0, "p2": 0, "p3": 0}
-        for bug in bugzilla_bugs:
-            prio = bug.priority[:2].lower()
-            if prio in results:
-                results[prio] += 1
-        for prio, count in results.items():
-            db.insert_priority(product, prio, count, time)
+            # Bugs per priority
+            results = {"p1": 0, "p2": 0, "p3": 0}
+            for bug in bugzilla_bugs:
+                prio = bug.priority[:2].lower()
+                if prio in results:
+                    results[prio] += 1
+            for prio, count in results.items():
+                db.insert_priority(product, prio, count, timestamp)
 
-        # Open bugs per assignee
-        open_bugs = [bug for bug in bugzilla_bugs if bug.status != "RESOLVED"]
-        grouped_bugs = group_bugs_by_assignee(open_bugs)
-        for email, bugs in grouped_bugs.items():
-            db.insert_assigned(product, email, len(bugs), time)
+            # Open bugs per assignee
+            open_bugs = [bug for bug in bugzilla_bugs if bug.status != "RESOLVED"]
+            grouped_bugs = group_bugs_by_assignee(open_bugs)
+            for email, bugs in grouped_bugs.items():
+                db.insert_assigned(product, email, len(bugs), timestamp)
+
+        # default for the interval is 24h
+        interval_minutes = int(options.get("<minutes>", 1440))
+        print("Waiting for {} minutes.".format(interval_minutes))
+        time.sleep(60 * interval_minutes)
+
+
+def sigint_handler(signal, frame):
+    sys.exit(0)
+
+
+signal.signal(signal.SIGINT, sigint_handler)

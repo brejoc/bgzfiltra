@@ -14,6 +14,7 @@ class QuestDB:
         Establishing connection to QuestDB.
         """
         self.connection = pg.connect(**db_config)
+        self.connection.autocommit = True
         self.cursor = self.connection.cursor()
 
     def setup_tables(self):
@@ -42,7 +43,6 @@ class QuestDB:
             INSERT INTO bugs_per_status VALUES (%s, %s, %s, %s);""",
             (product, status, count, time),
         )
-        self.connection.commit()
 
     def insert_component(
         self, product: str, component: str, count: int, time: datetime
@@ -52,7 +52,6 @@ class QuestDB:
             INSERT INTO bugs_per_component VALUES (%s, %s, %s, %s);""",
             (product, component, count, time),
         )
-        self.connection.commit()
 
     def insert_l3(self, product: str, status: str, count: int, time: datetime):
         self.cursor.execute(
@@ -60,7 +59,6 @@ class QuestDB:
             INSERT INTO bugs_l3 VALUES (%s, %s, %s, %s);""",
             (product, status, count, time),
         )
-        self.connection.commit()
 
     def insert_l3_cases(self, product: str, status: str, count: int, time: datetime):
         self.cursor.execute(
@@ -68,7 +66,6 @@ class QuestDB:
             INSERT INTO bugs_l3_cases VALUES (%s, %s, %s, %s);""",
             (product, status, count, time),
         )
-        self.connection.commit()
 
     def insert_priority(self, product: str, priority: str, count: int, time: datetime):
         self.cursor.execute(
@@ -76,7 +73,6 @@ class QuestDB:
             INSERT INTO bugs_priority VALUES (%s, %s, %s, %s);""",
             (product, priority, count, time),
         )
-        self.connection.commit()
 
     def insert_assigned(self, product: str, email: str, count: int, time: datetime):
         self.cursor.execute(
@@ -84,4 +80,3 @@ class QuestDB:
             INSERT INTO bugs_assigned VALUES (%s, %s, %s, %s);""",
             (product, email, count, time),
         )
-        self.connection.commit()

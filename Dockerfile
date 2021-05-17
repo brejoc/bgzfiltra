@@ -11,7 +11,7 @@ RUN poetry install --no-dev --no-interaction --no-ansi
 
 # copy the content of the local src directory to the working directory
 COPY src/ .
-RUN rm *.tmp
+RUN rm -f *.tmp
 
 # command to run on container start
 CMD [ "poetry", "run", "./bgzf", "--interval", "1440"]

@@ -7,6 +7,8 @@ services:
     restart: always
     networks:
       - "questdb"
+    depends_on:
+      - "questdb"
 
   questdb:
     image: questdb/questdb

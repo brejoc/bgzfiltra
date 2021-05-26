@@ -127,7 +127,7 @@ def main(options):
                 db.insert_priority(product, prio, count, timestamp)
 
             # Open bugs per assignee
-            open_bugs = [bug for bug in bugzilla_bugs if bug.status != "RESOLVED"]
+            open_bugs = [bug for bug in bugzilla_bugs if bug.status not in ["RESOLVED", "VERIFIED"]]
             grouped_bugs = group_bugs_by_assignee(open_bugs)
             for email, bugs in grouped_bugs.items():
                 db.insert_assigned(product, email, len(bugs), timestamp)

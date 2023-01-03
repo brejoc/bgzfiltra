@@ -26,12 +26,12 @@ services:
     image: grafana/grafana
     container_name: bgzfiltra_grafana
     restart: always
+    user: '472'
     ports:
-      - 3000:3000
+      - "3000:3000"
     networks:
       - "questdb"
     volumes:
-      - ./data/grafana:/var/lib/grafana/
       - ./grafana/provisioning/:/etc/grafana/provisioning/
 
 networks:

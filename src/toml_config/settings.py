@@ -120,7 +120,7 @@ def _bugzilla_section_checks(settings):
             'sslverify definition missing in settings file: sslverify = true',
             file=sys.stderr,
         )
-    if "use_legacy_crendentials" not in settings["bugzilla"]:
+    if "use_legacy_credentials" not in settings["bugzilla"]:
         print(
             'use_legacy_credentials missing in settings file: use_legacy_credentials = false',
             file=sys.stderr,

@@ -3,6 +3,9 @@ products = ["SUSE Manager 4.0", "SUSE Manager 4.1", "SUSE Manager 4.2", "SUSE Ma
 url = "bugzilla.suse.com"
 username = "<user>"
 password = "<password>"
+apikey = "<api_key_from_bugzilla>"
+use_legacy_credentials = false
+sslverify = false
 
 [questdb]
 user = "admin"

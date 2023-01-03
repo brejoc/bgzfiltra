@@ -5,7 +5,7 @@ username = "<user>"
 password = "<password>"
 apikey = "<api_key_from_bugzilla>"
 use_legacy_credentials = false
-sslverify = false
+sslverify = true
 
 [questdb]
 user = "admin"

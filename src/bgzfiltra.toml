@@ -4,7 +4,7 @@ url = "bugzilla.suse.com"
 username = "<user>"
 password = "<password>"
 apikey = "<api_key_from_bugzilla>"
-use_legacy_credentials = false
+use_legacy_credentials = true
 sslverify = true
 
 [questdb]

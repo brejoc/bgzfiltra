@@ -10,6 +10,6 @@ sslverify = false
 [questdb]
 user = "admin"
 password = "quest"
-host = "127.0.0.1"
+host = "questdb"
 port = "8812"
 database = "qdb"

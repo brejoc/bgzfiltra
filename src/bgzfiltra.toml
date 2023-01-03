@@ -1,5 +1,5 @@
 [bugzilla]
-products = ["SUSE Manager 4.0", "SUSE Manager 4.1"]
+products = ["SUSE Manager 4.0", "SUSE Manager 4.1", "SUSE Manager 4.2", "SUSE Manager 4.3"]
 url = "bugzilla.suse.com"
 username = "<user>"
 password = "<password>"

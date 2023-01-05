@@ -4,10 +4,12 @@ __license__ = "MIT"
 
 import os
 import pickle
+import requests
 import typing
 import bugzilla
 
 from bugzilla.bug import Bug
+from bugzilla.exceptions import BugzillaError
 
 
 def get_bugs_for_product(
@@ -32,8 +34,8 @@ def __get_bugzilla_api(bgz_settings: typing.Dict[str, str]) -> bugzilla.Bugzilla
     bzapi = bugzilla.Bugzilla(bgz_settings["url"], api_key=bgz_settings["apikey"], sslverify=bgz_settings["sslverify"])
     try:
         if not bzapi.logged_in:
-            raise Exception("Authentication token is invalid or user is already logged out")
-    except Exception as exc:
+            raise BugzillaError("Authentication token is invalid or user is already logged out")
+    except (BugzillaError, requests.exceptions.HTTPError) as exc:
         if bgz_settings["use_legacy_credentials"]:
             print(f"There was an error authenticating Bugzilla using API KEY: {exc}")
             print("Trying authentication using legacy username and password")

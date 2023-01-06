@@ -5,7 +5,7 @@ FROM python:3.8
 WORKDIR /code
 
 # dependencies with poetry
-RUN pip install 'poetry==1.1.4'
+RUN pip install 'poetry==1.1.15'
 COPY ./src/poetry.lock ./src/pyproject.toml /code/
 RUN poetry install --no-dev --no-interaction --no-ansi
 

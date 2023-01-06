@@ -4,10 +4,12 @@ __license__ = "MIT"
 
 import os
 import pickle
+import requests
 import typing
 import bugzilla
 
 from bugzilla.bug import Bug
+from bugzilla.exceptions import BugzillaError
 
 
 def get_bugs_for_product(
@@ -27,13 +29,40 @@ def get_bugs_for_product(
     return bugs
 
 
+def __get_bugzilla_api(bgz_settings: typing.Dict[str, str]) -> bugzilla.Bugzilla:
+    print("Trying to authenticate to Bugzilla")
+    bzapi = bugzilla.Bugzilla(
+        bgz_settings["url"],
+        api_key=bgz_settings["apikey"],
+        sslverify=bgz_settings["sslverify"],
+    )
+    try:
+        if not bzapi.logged_in:
+            raise BugzillaError(
+                "Authentication token is invalid or user is already logged out"
+            )
+    except (BugzillaError, requests.exceptions.HTTPError) as exc:
+        if bgz_settings["use_legacy_credentials"]:
+            print(f"There was an error authenticating Bugzilla using API KEY: {exc}")
+            print("Trying authentication using legacy username and password")
+            bzapi = bugzilla.Bugzilla(
+                bgz_settings["url"], sslverify=bgz_settings["sslverify"]
+            )
+            bzapi.login(
+                user=bgz_settings["username"], password=bgz_settings["password"]
+            )
+        else:
+            raise exc
+    print("Bugzilla authentication was successful!")
+    return bzapi
+
+
 def load_bugs_for_product(
     product: str, bgz_settings: typing.Dict[str, str]
 ) -> typing.List[Bug]:
     """
     Fetches and returns list of bugs for a specific product.
     """
-    bzapi = bugzilla.Bugzilla(bgz_settings["url"])
-    bzapi.login(user=bgz_settings["username"], password=bgz_settings["password"])
+    bzapi = __get_bugzilla_api(bgz_settings)
     query = bzapi.build_query(product=product)
     return bzapi.query(query)

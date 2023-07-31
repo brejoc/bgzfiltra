@@ -133,7 +133,7 @@ def main(options):
                 db.insert_assigned(product, email, len(bugs), timestamp)
 
         # default for the interval is 24h
-        interval_minutes = int(options.get("<minutes>", 1440))
+        interval_minutes = int(options.get("<minutes>") or 1440)
         print("Waiting for {} minutes.".format(interval_minutes))
         time.sleep(60 * interval_minutes)
 
